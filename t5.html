@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AgeCheck</title>
+  </head>
+  <body>
+    <!-- Root container for react components -->
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+<script type="text/babel">
+      function AgeCheck(props) {
+
+        const [age, setAge] = React.useState("");
+        const [name, setName] = React.useState("");
+
+const inputChanged = (event) => {
+    setName(event.target.value)
+}
+
+const ageChanged = (event) => {
+    setAge(event.target.value)
+}
+
+const [tk, setTk] = React.useState("");
+
+const formSubmitted = (event) => {
+    event.preventDefault();
+    if (age >= 18){
+    setTk("Hello "+name);
+    } else {
+        setTk("You are too young");
+    }
+
+    /* age >= 18 ? "Hello "+ name : "You are too young" */
+}
+
+ return(
+     <div>
+        <h2> {tk} </h2>
+        <form onSubmit={formSubmitted}>
+            <label>Name: 
+            <input type="text" name="name"
+                 value={name} onChange={inputChanged}></input>
+                 </label>
+                 <p>{"\n"}</p>
+            <label>Age:
+             <input type="text" name="age"
+                 value={age} onChange={ageChanged} ></input>
+                 </label>
+                 <p>{"\n"}</p>
+             <input type="submit" value="Submit" />
+        </form>
+     </div>
+ );
+    }
+  ReactDOM.render(<AgeCheck />, document.getElementById("root"));
+</script>
+  </body>
+</html>

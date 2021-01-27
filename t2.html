@@ -20,17 +20,13 @@
        
         return(
             <div>
-                {props.teksti.length < 6  &&
-                    <p>Hello</p>
-                }
-                {props.teksti.length > 5  &&
-                    <p>Too Long</p>
-                }
+               
+                {props.teksti.length > 5 ? "Liian Pitkä" : props.teksti}
             </div>
         );
     
     }
-  ReactDOM.render(<Jos teksti="Hello" />, document.getElementById("root"));
+  ReactDOM.render(<Jos teksti="Hello!" />, document.getElementById("root"));
 </script>
   </body>
 </html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>SaaInputeilla</title>
+</head>
+
+<body>
+    <!-- Root container for react components -->
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+        function SaaInputeilla(props) {
+
+            const [kaupunki, setKaupunki] = React.useState('Helsinki');
+            const [isReady, setReady] = React.useState(false);
+            const [lt, setLt] = React.useState("");
+            const [weather, setWeather] = React.useState('');
+            const [icon, setIcon] = React.useState('');
+            const [count, setCount] = React.useState(0);
+
+
+            const inputChanged = (event) => {
+                setKaupunki([event.target.value])
+            }
+
+            /*
+             EN SAANUT APIA TOIMIMAAN POISHEITTOMAILILLA.
+             LUULEN ETTÄ TÄMÄ ON SILTI MELKO LÄHELLÄ OIKEAA VASTAUSTA TÄHÄN TEHTÄVÄÄN
+            */
+
+            React.useEffect(() => {
+                fetch('https://api.openweathermap.org/data/2.5/weather?q={' + kaupunki + '}&appid={7ba976a25def87b11fb21e0c91e19ec2}')
+                .then(response => response.json())
+                .then(responseData => {
+                    console.log(responseData);
+                    setLt(responseData.main.temp);
+                    setWeather(responseData.weather.description)
+                    setIcon(responseData.weather.icon)
+                    /*setReady(true);*/
+                }).catch(err => console.error(err))
+            }, [count])
+            /*
+            if (!isReady) {
+                return <p>Loading...</p>
+            }
+            */
+
+
+            const formSubmitted = (event) => {
+
+                event.preventDefault();
+                setCount(count + 1);
+
+            }
+
+            return (
+                <div>
+                    <form onSubmit={formSubmitted}>
+                        <input type="text" name="kaupunki"
+                            value={kaupunki} onChange={inputChanged} />
+                        <input type="submit" value="Get Weather" />
+                    </form>
+                    <p> City: {kaupunki} </p>
+                    <p> Temperature: {lt} celsius</p>
+                    <p> Weather: {weather} </p>
+                    <p>{icon}</p>
+
+                </div>
+            );
+        }
+        ReactDOM.render(<SaaInputeilla />, document.getElementById("root"));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Kysymys</title>
+  </head> 
+  <body>
+    <!-- Root container for react components -->
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+<script type="text/babel">
+      function Kysymys(props) {
+
+        const [question, setQuestion] = React.useState('');
+        const [isReady, setReady] = React.useState(false);
+        const [count, setCount] = React.useState(0);
+        const [ky, setKy] = React.useState("");
+
+        /*
+        React.useEffect(()=> 
+        {fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')
+        .then(response=> response.json())
+        .then(responseData=> {
+            setExplanation(responseData.question);
+            setUrl(responseData.url  );
+            setReady(true);
+        }).catch(err=> console.error(err  ))}, [])
+
+        if (!isReady) {
+          return <p>Loading...</p>
+        }
+        */
+
+        React.useEffect(()=>
+        {fetch('https://opentdb.com/api.php?amount=1')
+        .then(response=> response.json())
+        .then(responseData=> {
+            console.log(responseData);
+            setQuestion(responseData.results[0].question);
+            setReady(true);
+        }).catch(err=> console.error(err  ))}, [count])
+
+        if (!isReady) {
+          return <p>Loading...</p>
+        }
+
+        const formSubmitted = (event) => {
+            event.preventDefault();
+            setKy(question);
+            setCount(count + 1);
+    }
+
+
+        /*
+        https://opentdb.com/api.php?amount=1
+        */
+
+ return(
+     <div>
+        <p> {ky} </p>
+        <form onSubmit={formSubmitted}>
+            
+                <p>{"\n"}</p>
+            <input type="submit" value="new question" />
+            
+        </form>
+     </div>
+ );
+    }
+  ReactDOM.render(<Kysymys />, document.getElementById("root"));
+</script>
+  </body>
+</html>

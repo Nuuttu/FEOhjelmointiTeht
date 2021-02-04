@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>QuestionsFromOpentdb</title>
+</head>
+
+<body>
+    <!-- Root container for react components -->
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+
+        /*
+        <button name="False" onClick={answeredWrong}>{wrongAnswers[0]}</button><p />
+        */
+        AddAnswer(props) {
+
+            const list = props.wrongAnswers;
+
+            const items = []
+
+            for (const [index, value] of props.wrongAnswers.entries()) {
+                items.push(<button key={index}>{value}</button>)
+                items.push(<p />)
+            }
+
+            items.push(<button key="123" onClick={this.answeredRight}>{props.rightAnswer}</button>)
+
+            return (
+                <div>
+                    {items}
+                </div>
+            );
+        }
+
+        
+
+        function QuestionsFromOpentdb() {
+
+            const [isReady, setReady] = React.useState(false);
+            const [count, setCount] = React.useState(0);
+            const [va, setVa] = React.useState("");
+            const [question, setQuestion] = React.useState('');
+            const [correctAnswer, setCorrectAnswer] = React.useState('');
+            const [wrongAnswers, setWrongAnswers] = React.useState('');
+            const [qid, setQid] = React.useState('0');
+
+            React.useEffect(() => {
+                fetch('https://opentdb.com/api.php?amount=1')
+                    .then(response => response.json())
+                    .then(responseData => {
+                        console.log(responseData);
+                        setQuestion(responseData.results[0].question);
+                        setCorrectAnswer(responseData.results[0].correct_answer);
+                        setWrongAnswers(responseData.results[0].incorrect_answers);
+                        setReady(true);
+                    }).catch(err => console.error(err))
+            }, [count])
+
+            if (!isReady) {
+                return <p>Loading...</p>
+            }
+
+            const answeredRight = (event) => {
+                event.preventDefault();
+                setVa("YOU ARE CORRECT!!");
+            }
+
+            const answeredWrong = (event) => {
+                event.preventDefault();
+                setVa("WRONG WRONG WRONG!!");
+            }
+
+            const formSubmitted = (event) => {
+                event.preventDefault();
+                setCount(count + 1);
+                setVa("");
+                AddAnswer();
+            }
+
+            return (
+                <div>
+                    <form onSubmit={formSubmitted}>
+                        <p>{"\n"}</p>
+                        <input type="submit" value="next question" />
+                        <h3> {question} </h3>
+                    </form>
+                    <AddAnswer wrongAnswers={wrongAnswers} rightAnswer={correctAnswer} />
+                    <h2>{va}</h2>
+             
+                </div>
+            );
+        }
+        /*
+        
+            <button name="Correct" onClick={answeredRight}>{correctAnswer}</button><p />
+            <button name="False" onClick={answeredWrong}>{wrongAnswers[0]}</button><p />
+        */
+
+        /*
+            https://opentdb.com/api.php?amount=1
+        */
+        /*
+        function Btns(props) {
+                return <button name='False2' onClick={answeredWrong}>{wrongAnswers[0]}</button><p/>;
+            }
+        */
+        ReactDOM.render(<QuestionsFromOpentdb />, document.getElementById("root"));
+    </script>
+</body>
+
+</html>

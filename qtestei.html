@@ -19,27 +19,6 @@
         /*
         <button name="False" onClick={answeredWrong}>{wrongAnswers[0]}</button><p />
         */
-        AddAnswer(props) {
-
-            const list = props.wrongAnswers;
-
-            const items = []
-
-            for (const [index, value] of props.wrongAnswers.entries()) {
-                items.push(<button key={index}>{value}</button>)
-                items.push(<p />)
-            }
-
-            items.push(<button key="123" onClick={this.answeredRight}>{props.rightAnswer}</button>)
-
-            return (
-                <div>
-                    {items}
-                </div>
-            );
-        }
-
-        
 
         function QuestionsFromOpentdb() {
 
@@ -81,7 +60,7 @@
                 event.preventDefault();
                 setCount(count + 1);
                 setVa("");
-                AddAnswer();
+               
             }
 
             return (
@@ -91,16 +70,16 @@
                         <input type="submit" value="next question" />
                         <h3> {question} </h3>
                     </form>
-                    <AddAnswer wrongAnswers={wrongAnswers} rightAnswer={correctAnswer} />
+                    <button name="Correct" onClick={answeredRight}>{correctAnswer}</button><p />
+                    <button name="False" onClick={answeredWrong}>{wrongAnswers[0]}</button><p />
                     <h2>{va}</h2>
-             
+                    
                 </div>
             );
         }
         /*
         
-            <button name="Correct" onClick={answeredRight}>{correctAnswer}</button><p />
-            <button name="False" onClick={answeredWrong}>{wrongAnswers[0]}</button><p />
+           
         */
 
         /*

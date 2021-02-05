@@ -15,22 +15,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
 
     <script type="text/babel">
-
-        /*
-        <button name="False" onClick={answeredWrong}>{wrongAnswers[0]}</button><p />
-        */
+       
         function AddAnswer(props) {
-
-            const list = props.wrongAnswers;
-
+            const list = props.wAnswers;
             const items = []
-
-            for (const [index, value] of props.wrongAnswers.entries()) {
-                items.push(<button key={index}>{value}</button>)
-                items.push(<p />)
+            for (const [index, value] of props.wAnswers.entries()) {
+                items.push(<li><button key={index} onClick={props.ansW}>{value}</button></li>)
             }
+            items.push(<li><button key="123" onClick={props.ansR}>{props.rightAnswer}</button></li>)
 
-            items.push(<button key="123" onClick={this.answeredRight}>{props.rightAnswer}</button>)
+            shuffle(items);
 
             return (
                 <div>
@@ -39,7 +33,24 @@
             );
         }
 
-        
+        // copy from stackoverflow
+        function shuffle(array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+            return array;
+        }
 
         function QuestionsFromOpentdb() {
 
@@ -67,13 +78,11 @@
                 return <p>Loading...</p>
             }
 
-            const answeredRight = (event) => {
-                event.preventDefault();
+            const answeredRight = () => {
                 setVa("YOU ARE CORRECT!!");
             }
 
-            const answeredWrong = (event) => {
-                event.preventDefault();
+            const answeredWrong = () => {
                 setVa("WRONG WRONG WRONG!!");
             }
 
@@ -91,22 +100,20 @@
                         <input type="submit" value="next question" />
                         <h3> {question} </h3>
                     </form>
-                    <AddAnswer wrongAnswers={wrongAnswers} rightAnswer={correctAnswer} />
+                    <ol>
+                    <AddAnswer wAnswers={wrongAnswers} rightAnswer={correctAnswer} ansR={answeredRight} ansW={answeredWrong} />
+                    </ol>
                     <h2>{va}</h2>
-             
+
                 </div>
             );
         }
         /*
-        
             <button name="Correct" onClick={answeredRight}>{correctAnswer}</button><p />
             <button name="False" onClick={answeredWrong}>{wrongAnswers[0]}</button><p />
-        */
-
-        /*
+        
             https://opentdb.com/api.php?amount=1
-        */
-        /*
+       
         function Btns(props) {
                 return <button name='False2' onClick={answeredWrong}>{wrongAnswers[0]}</button><p/>;
             }

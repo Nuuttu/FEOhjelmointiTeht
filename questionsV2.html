@@ -56,38 +56,44 @@
 
         function Correct() {
             alert("CORRECT!");
-            count.right = count.right +1;
+            if (!hasAnswered) {
+                count.right = count.right + 1;
+                hasAnswered = true;
+            }
         }
 
         function Wrong() {
-            alert("WRONG");
-            count.wrong = count.wrong +1;
+            alert("WRONG, correct answer was:  " + cAnswer);
+            if (!hasAnswered) {
+                count.wrong = count.wrong + 1;
+                hasAnswered = true;
+            }
+
         }
 
-        let count = {
+        let cAnswer = "";
+
+        const count = {
             right: 0,
             wrong: 0
         }
 
-        function AnsCount() {
-            return(<div className="counts">
-                <p>Correct clicks: {count.right}</p>
-                <p>Incorrect clicks: {count.wrong}</p>
-                </div>
-            )
-        }
+        let hasAnswered = true;
 
-        function QuestionsFromOpentdbV2(props) {
+        function QuestionsFromOpentdbV2() {
 
             const [question, setQuestion] = React.useState('');
             const [correctAnswer, setCorrectAnswer] = React.useState('');
             const [wrongAnswers, setWrongAnswers] = React.useState([]);
+            const [rAnsCount, setRAnsCount] = React.useState(0);
+            const [wAnsCount, setWAnsCount] = React.useState(0);
 
             React.useEffect(() => {
                 fetchQuestion();
             }, [])
 
             const fetchQuestion = () => {
+                if (hasAnswered) {
                 fetch('https://opentdb.com/api.php?amount=1')
                     .then(response => response.json())
                     .then(responseData => {
@@ -96,18 +102,26 @@
                         setCorrectAnswer(responseData.results[0].correct_answer);
                         setWrongAnswers(responseData.results[0].incorrect_answers);
                     }).catch(err => console.error(err))
+                    hasAnswered = false;
+                } else {
+                    alert("Answer first");
+                }
             }
+
+            cAnswer = correctAnswer;
 
             return (
                 <div>
                     <button onClick={fetchQuestion}>Next question</button>
                     <p>{question}</p>
                     <AnswerList correct_answer={correctAnswer} wronganswers={wrongAnswers} />
-                    <AnsCount />
+                    <p>Correct clicks: {count.right}</p>
+                    <p>Incorrect clicks: {count.wrong}</p>
+
                 </div>
             );
         }
-      
+
         /*
             https://opentdb.com/api.php?amount=1
         */

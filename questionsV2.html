@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>QuestionsFromOpentdbV2</title>
+</head>
+
+<body>
+    <!-- Root container for react components -->
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+
+
+        function AnswerList(props) {
+            const list = []
+            for (const [index, value] of props.wronganswers.entries()) {
+                list.push(<li key={index}><button key={index} onClick={Wrong}>{value}</button></li>)
+            }
+            list.push(<li key="oike"><button key={66} onClick={Correct}>{props.correct_answer}</button></li>)
+
+            shuffle(list);
+
+            return (
+                <div className="ansList">
+                    <ol key="listaa">
+                        {list}
+                    </ol>
+                </div>
+            )
+        }
+
+        // copy from stackoverflow
+        function shuffle(array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+
+            // While there remain elements to shuffle...
+            while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+            return array;
+        }
+
+        function Correct() {
+            alert("CORRECT!");
+            count.right = count.right +1;
+        }
+
+        function Wrong() {
+            alert("WRONG");
+            count.wrong = count.wrong +1;
+        }
+
+        let count = {
+            right: 0,
+            wrong: 0
+        }
+
+        function AnsCount() {
+            return(<div className="counts">
+                <p>Correct clicks: {count.right}</p>
+                <p>Incorrect clicks: {count.wrong}</p>
+                </div>
+            )
+        }
+
+        function QuestionsFromOpentdbV2(props) {
+
+            const [question, setQuestion] = React.useState('');
+            const [correctAnswer, setCorrectAnswer] = React.useState('');
+            const [wrongAnswers, setWrongAnswers] = React.useState([]);
+
+            React.useEffect(() => {
+                fetchQuestion();
+            }, [])
+
+            const fetchQuestion = () => {
+                fetch('https://opentdb.com/api.php?amount=1')
+                    .then(response => response.json())
+                    .then(responseData => {
+                        console.log(responseData);
+                        setQuestion(responseData.results[0].question);
+                        setCorrectAnswer(responseData.results[0].correct_answer);
+                        setWrongAnswers(responseData.results[0].incorrect_answers);
+                    }).catch(err => console.error(err))
+            }
+
+            return (
+                <div>
+                    <button onClick={fetchQuestion}>Next question</button>
+                    <p>{question}</p>
+                    <AnswerList correct_answer={correctAnswer} wronganswers={wrongAnswers} />
+                    <AnsCount />
+                </div>
+            );
+        }
+      
+        /*
+            https://opentdb.com/api.php?amount=1
+        */
+
+        ReactDOM.render(<QuestionsFromOpentdbV2 />, document.getElementById("root"));
+    </script>
+</body>
+
+</html>

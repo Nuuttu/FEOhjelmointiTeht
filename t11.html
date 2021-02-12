@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>GithubReposWithSearch</title>
+</head>
+
+<body>
+    <!-- Root container for react components -->
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <script type="text/babel">
+        function GithubReposWithSearch() {
+            const [items, setItems] = React.useState([]);
+            const [searchTerm, setSearchTerm] = React.useState('');
+
+            const click = () => {
+                event.preventDefault();
+                fetch('https://api.github.com/search/repositories?q=' + searchTerm)
+                    .then(response => response.json())
+                    .then(responseData => {
+                        setItems(responseData.items)
+                    })
+                    .catch(err => console.error(err))
+            }
+
+            const inputChanged = (event) => {
+                setSearchTerm(event.target.value)
+            }
+
+            const itemRows = items.map((items) =>
+                <tr key={items.id}>
+                    <td>{items.full_name}</td>
+                    <td><a href={items.html_url}>{items.url}</a></td>
+                </tr>
+            )
+
+            return (
+                <div>
+                    <h2>Repositories</h2>
+                    <form onSubmit={click}>
+                        <input type="text" name="searchTerm"
+                            value={searchTerm} onChange={inputChanged} />
+                        <input type="submit" value="Search" />
+                    </form>
+                    <table>
+                        <tbody>
+                            <tr><th>name</th><th>url</th></tr>
+                            {itemRows}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<GithubReposWithSearch />, document.getElementById("root"));
+    </script>
+</body>
+
+</html>
